@@ -18,7 +18,7 @@ export default class Chat extends Component {
         }}
       >
         {name ? (
-          <Text>Hello, {name}</Text>
+          <Text>Hello, {name}!</Text>
         ) : (
           <Text>You forgot to type your name!</Text>
         )}
