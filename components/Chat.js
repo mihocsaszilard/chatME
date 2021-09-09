@@ -20,12 +20,12 @@ export default class Chat extends Component {
         }}
       >
         <Text
-          style={styles.back}
+          style={styles.backContainer}
           onPress={() => {
             this.props.navigation.navigate("Start");
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity style={styles.back}>
             <Ionicons name="arrow-back" size={40} color="black" />
           </TouchableOpacity>
         </Text>
@@ -33,7 +33,7 @@ export default class Chat extends Component {
           // if the user doesn't type a name the welcome message changes
         }
         {name ? (
-          <Text style={styles.welcomeText}>Hello, {name}!</Text>
+          <Text style={styles.welcomeText}>Hello {name}!</Text>
         ) : (
           <Text style={styles.welcomeText}>You forgot to type your name!</Text>
         )}
@@ -46,14 +46,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 10,
+    textShadowRadius: 2,
     textShadowColor: "#000",
   },
-  back: {
+  backContainer: {
     position: "absolute",
     top: 40,
     left: 20,
+  },
+  back: {
+    height: 40,
+    width: 40,
     backgroundColor: "rgba(255, 255, 255, .3)",
-    borderRadius: 15,
+    borderRadius: 50,
+    alignSelf: "center",
+    justifyContent: "center",
   },
 });

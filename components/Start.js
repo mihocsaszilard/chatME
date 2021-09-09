@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     color: "#fff",
     textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 10,
+    textShadowRadius: 2,
     textShadowColor: "#000",
   },
   imgBackground: {
