@@ -17,6 +17,9 @@ export default class Chat extends Component {
           backgroundColor: bgColor,
         }}
       >
+        {
+          // if the user doesn't type a name the welcome message changes
+        }
         {name ? (
           <Text>Hello, {name}!</Text>
         ) : (

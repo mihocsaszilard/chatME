@@ -44,7 +44,7 @@ export default class Start extends Component {
               <Text style={styles.chooseColor}>Choose Background Color:</Text>
               <View style={styles.colorPicker}>
                 <TouchableOpacity
-                  //#090C08; #474056; #8A95A5; #B9C6AE
+                  //#090C08; #474056; #8A95A5; #B9C6AE colors
                   style={[styles.colors, styles.black]}
                   onPress={() => this.setState({ bgColor: "#090C08" })}
                 ></TouchableOpacity>
