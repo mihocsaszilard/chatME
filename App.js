@@ -8,6 +8,7 @@ import "react-native-gesture-handler";
 
 const Stack = createStackNavigator();
 var width = Dimensions.get("window").width;
+
 export default class App extends Component {
   constructor(props) {
     super(props);
