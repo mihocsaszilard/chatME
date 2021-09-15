@@ -16,17 +16,16 @@ export default class App extends Component {
   render() {
     return (
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Start"
-          screenOptions={{
-            headerTransparent: true,
-            headerTintColor: "#555",
-          }}
-        >
+        <Stack.Navigator initialRouteName="Start">
           <Stack.Screen
             name="Start"
             component={Start}
             options={{
+              headerTransparent: true,
+              headerTintColor: "#555",
+              headerStyle: {
+                backgroundColor: "#555",
+              },
               headerTitleStyle: {
                 color: "white",
               },
@@ -41,6 +40,15 @@ export default class App extends Component {
                 borderBottomColor: "#555",
                 borderBottomWidth: 1,
                 width: width / 1.48,
+              },
+            }}
+            options={{
+              headerTransparent: false,
+              headerTintColor: "#555",
+              headerStyle: {
+                backgroundColor: "#222",
+                borderBottomColor: "#333",
+                borderBottomWidth: 2,
               },
             }}
           />

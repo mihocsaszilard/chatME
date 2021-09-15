@@ -102,12 +102,17 @@ export default class Chat extends Component {
   }
 
   sendBotResponse(text) {
-    let msg = {
-      _id: this.state.messages.length + 1,
-      text,
-      createdAt: new Date(),
-      user: ChatBot,
-    };
+    let msg;
+
+    if (text == "learn") {
+      msg = {
+        _id: this.state.messages.length + 1,
+        text: "Look, these are the most popular JavaScript frameworks!",
+        image: "https://img.icons8.com/color/96/000000/react-native.png",
+        createdAt: new Date(),
+        user: ChatBot,
+      };
+    }
 
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, [msg]),
@@ -126,6 +131,7 @@ export default class Chat extends Component {
       message,
       (result) => this.hadleGoogleResponse(result),
       (error) => console.log(error)
+      //possible unhandled promise rejection on real ios device (iphone8)
     );
   }
 
