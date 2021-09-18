@@ -5,12 +5,11 @@ import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { Dialogflow_V2 } from "react-native-dialogflow";
-
 import { dialogflowConfig } from "./../env";
-import { QuerySnapshot } from "@firebase/firestore";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -25,7 +24,7 @@ const firebaseConfig = {
 };
 
 const ChatBot = {
-  _id: 2,
+  uid: 1,
   name: "ChatBot",
   avatar: "https://placeimg.com/140/140/any",
 };
@@ -38,6 +37,7 @@ export default class Chat extends Component {
       messages: [],
       uid: 0,
       loginText: "Logging in...",
+      close: "-tap to hide",
       user: {
         _id: "",
         name: "",
@@ -49,7 +49,7 @@ export default class Chat extends Component {
       //initialize
       firebase.initializeApp(firebaseConfig);
     }
-    //reference to the chatME collection
+    //reference to the messages collection
     this.referenceMessages = firebase.firestore().collection("messages");
     this.referenceUsers = null;
   }
@@ -68,7 +68,7 @@ export default class Chat extends Component {
           name: name,
         },
         loginText: (
-          <Text style={[styles.online, { color: "green" }]}>Online! </Text>
+          <Text style={[styles.online, { color: "green" }]}>Online!</Text>
         ),
       });
 
@@ -101,18 +101,10 @@ export default class Chat extends Component {
       Dialogflow_V2.LANG_ENGLISH_US,
       dialogflowConfig.project_id
     );
-
-    // this.referenceMessages = firebase.firestore().collection("messages");
-    // if (this.referenceMessages) {
-    //   this.unsubscribe = this.referenceMessages.onSnapshot(
-    //     this.onCollectionUpdate
-    //   );
-    // } else {
-    //   (error) => console.log(error);
-    // }
   }
 
   componentWillUnmount() {
+    //stop listening to authentication
     this.authUnsubscribe();
   }
 
@@ -158,6 +150,7 @@ export default class Chat extends Component {
     );
   }
 
+  //typing indicato --not working yet
   setIsTyping = () => {
     this.setState({
       isTyping: !this.state.isTyping,
@@ -165,11 +158,13 @@ export default class Chat extends Component {
   };
 
   handleGoogleResponse(result) {
+    //I don't need the whole data just the text
     let text = result.queryResult.fulfillmentMessages[0].text.text[0];
 
     this.sendBotResponse(text);
   }
 
+  //added user, createdAt and id to the Dialogbox response
   sendBotResponse(text) {
     let msg = {
       _id: this.state.messages.length + 2,
@@ -191,14 +186,14 @@ export default class Chat extends Component {
       }
     );
 
-    let message = messages[0].text;
+    // let message = messages[0].text;
 
-    Dialogflow_V2.requestQuery(
-      message,
-      (result) => this.handleGoogleResponse(result),
-      (error) => console.log(error)
-      //possible unhandled promise rejection on real ios device (iphone8)
-    );
+    // Dialogflow_V2.requestQuery(
+    //   message,
+    //   (result) => this.handleGoogleResponse(result),
+    //   (error) => console.log(error)
+    //   //possible unhandled promise rejection on real ios device (iphone8)
+    // );
   }
 
   // onQuickReply(quickReply) {
@@ -217,6 +212,7 @@ export default class Chat extends Component {
 
   addMessages(message) {
     message = this.state.messages[0];
+    //added new message to firebase
     this.referenceMessages.add({
       uid: this.state.uid,
       _id: this.state.messages.length + 1,
@@ -226,14 +222,17 @@ export default class Chat extends Component {
     });
   }
 
-  hideOnline() {
-    return <Text style={styles.online}>{this.state.loginText}</Text>;
-  }
-
   render() {
     return (
       <View style={styles.chatContainer}>
-        <Text>{this.hideOnline()}</Text>
+        <TouchableOpacity
+          //hide 'Online' text
+          onPress={() => this.setState({ loginText: "", close: "" })}
+        >
+          <Text style={styles.online}>
+            {this.state.loginText} {this.state.close}
+          </Text>
+        </TouchableOpacity>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
@@ -241,11 +240,7 @@ export default class Chat extends Component {
           renderUsernameOnMessage={true}
           isTyping={this.state.isTyping}
           onQuickReply={(quickReply) => this.onQuickReply(quickReply)}
-          user={{
-            _id: 1,
-            name: this.props.route.params.name,
-            avatar: "https://placeimg.com/140/140/any",
-          }}
+          user={this.state.user}
         />
         {/* fix for older Android devices where the input field is hidden beneath the keyboard. */}
         {Platform.OS === "android" ? (
@@ -261,13 +256,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#222",
   },
   online: {
-    position: "absolute",
     width: "100%",
-    flexDirection: "row",
     textAlign: "center",
     backgroundColor: "#222",
-    borderBottomWidth: 2,
-    borderBottomColor: "#333",
     color: "white",
     zIndex: 10,
   },
