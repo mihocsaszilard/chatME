@@ -112,10 +112,7 @@ export default class Start extends Component {
           </View>
         </View>
         {/*background image credits */}
-        <Text style={styles.copyright}>
-          <Ionicons name="information-circle-outline" size={12} color="white" />
-          photo: unsplash.com/@charlesdeluvio
-        </Text>
+        <Text style={styles.copyright}>photo: @charlesdeluvio</Text>
       </ImageBackground>
     );
   }

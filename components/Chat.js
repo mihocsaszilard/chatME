@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
   View,
-  Button,
+  Text,
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
@@ -31,11 +31,17 @@ const ChatBot = {
 };
 
 export default class Chat extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isTyping: false,
       messages: [],
+      uid: 0,
+      loginText: "Logging in...",
+      user: {
+        _id: "",
+        name: "",
+      },
     };
 
     //if no firebase
@@ -45,13 +51,46 @@ export default class Chat extends Component {
     }
     //reference to the chatME collection
     this.referenceMessages = firebase.firestore().collection("messages");
+    this.referenceUsers = null;
   }
 
   componentDidMount() {
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        firebase.auth().signInAnonymously();
+      }
+      //update user data
+      this.setState({
+        uid: user.uid,
+        messages: [],
+        user: {
+          _id: user.uid,
+          name: name,
+        },
+        loginText: (
+          <Text style={[styles.online, { color: "green" }]}>Online! </Text>
+        ),
+      });
+
+      this.referenceMessagesUsers = firebase
+        .firestore()
+        .collection("messages")
+        .where("uid", "==", this.state.uid);
+
+      if (this.referenceMessagesUsers) {
+        this.unsubscribe = this.referenceMessages
+          .orderBy("createdAt", "desc")
+          .onSnapshot(this.onCollectionUpdate);
+      } else {
+        (error) => console.log(error);
+      }
+    });
+
     //inputted name from Start screen
     let name = this.props.route.params.name;
     //display the name in header as screen title in Chat
     this.props.navigation.setOptions({ title: name });
+
     this.setState({
       isTyping: false,
     });
@@ -63,18 +102,18 @@ export default class Chat extends Component {
       dialogflowConfig.project_id
     );
 
-    this.referenceMessages = firebase.firestore().collection("messages");
-    if (this.referenceMessages) {
-      this.unsubscribe = this.referenceMessages.onSnapshot(
-        this.onCollectionUpdate
-      );
-    } else {
-      (error) => console.log(error);
-    }
+    // this.referenceMessages = firebase.firestore().collection("messages");
+    // if (this.referenceMessages) {
+    //   this.unsubscribe = this.referenceMessages.onSnapshot(
+    //     this.onCollectionUpdate
+    //   );
+    // } else {
+    //   (error) => console.log(error);
+    // }
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.authUnsubscribe();
   }
 
   onCollectionUpdate = (QuerySnapshot) => {
@@ -82,16 +121,20 @@ export default class Chat extends Component {
     //go through each document
     QuerySnapshot.forEach((doc) => {
       //get the queryDocumentSnapshot's data
-      var data = doc.data();
+      let data = doc.data();
       messages.push({
         _id: data._id,
         text: data.text,
         createdAt: data.createdAt.toDate(),
-        user: data.user,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+        },
       });
     });
     this.setState({
-      messages: messages.sort((a, b) => Date.parse(b._id) - Date.parse(a._id)),
+      messages,
+      // : messages.sort((a, b) => Date.parse(b._id) - Date.parse(a._id)),
     });
   };
 
@@ -102,11 +145,11 @@ export default class Chat extends Component {
       <Bubble
         {...props}
         wrapperStyle={{
-          //user's color
+          //user's chat bubble color
           right: {
             backgroundColor: bgColor,
           },
-          //chat partner's color
+          //chat partner's bubble color
           left: {
             backgroundColor: "#555",
           },
@@ -175,6 +218,7 @@ export default class Chat extends Component {
   addMessages(message) {
     message = this.state.messages[0];
     this.referenceMessages.add({
+      uid: this.state.uid,
       _id: this.state.messages.length + 1,
       text: message.text,
       createdAt: message.createdAt,
@@ -182,9 +226,14 @@ export default class Chat extends Component {
     });
   }
 
+  hideOnline() {
+    return <Text style={styles.online}>{this.state.loginText}</Text>;
+  }
+
   render() {
     return (
       <View style={styles.chatContainer}>
+        <Text>{this.hideOnline()}</Text>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
@@ -210,5 +259,16 @@ const styles = StyleSheet.create({
   chatContainer: {
     flex: 1,
     backgroundColor: "#222",
+  },
+  online: {
+    position: "absolute",
+    width: "100%",
+    flexDirection: "row",
+    textAlign: "center",
+    backgroundColor: "#222",
+    borderBottomWidth: 2,
+    borderBottomColor: "#333",
+    color: "white",
+    zIndex: 10,
   },
 });

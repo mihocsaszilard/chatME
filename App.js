@@ -47,8 +47,8 @@ export default class App extends Component {
               headerTintColor: "#555",
               headerStyle: {
                 backgroundColor: "#222",
-                borderBottomColor: "#333",
-                borderBottomWidth: 2,
+                // borderBottomColor: "#333",
+                // borderBottomWidth: 2,
               },
             }}
           />
