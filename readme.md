@@ -8,10 +8,11 @@
  </div>
 
  Table of content
- * [Built with](#built)
-      + (Features and Requirements)[#features]
-          * (User Stories )[stories]
-          * lime  
+  * [Built with](#built)
+  + [Features and Requirements](#features)
+      * [User Stories](#stories)
+      * [Key Features](#key-features)
+  * [Technical Requirements](#technical)
 
 <h2 id="built">Built with</h2>
 
@@ -59,7 +60,7 @@
   </li>
 </ul>
 
-<h3>Key Features</h3>
+<h3 id="key-features">Key Features</h3>
 
 <ul>
    <li>
@@ -78,7 +79,7 @@
   </li>
 </ul>
 
-<h2>Technical Requirements</h2>
+<h2 id="technical">Technical Requirements</h2>
 
 <ul>
   <li>
