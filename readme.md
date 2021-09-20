@@ -208,10 +208,10 @@ This command will open a new window in your browser and offers more options to o
 
 <h2>Contact</h2>
 
-[<img align="left" alt="send me an email" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/mail.svg" />](mihocsa48@gmail.com)
 [<img align="left" alt="linkedin profile" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/linkedin.svg" />][linkedin]
 [<img align="left" alt="twitter profile" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/twitter.svg" />][twitter]
 [<img align="left" alt="portfolio website" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/website.svg" />][website]
+[<img align="left" alt="send me an email" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/mail.svg" />]() mihocsa48@gmail.com
 
 
 [linkedin]: https://www.linkedin.com/in/mihocsaszilard/
