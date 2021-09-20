@@ -182,8 +182,8 @@
 In order to store the conversation you need a [Firebase](https://console.firebase.google.com/) account. If your account is ready, please create a new project and enable the 'Anonymus Authentication' from the left side Authentication menu. When this is ready, you need to create your database. To do this click the 'Firestore Database' and give it the name 'messages'.
 The last step is to configure your freshly created database. To do this, click the little gear icon from the left side menu and select 'Project Settings'. Under the General tab, you’ll find a section called Your apps, which is where you can generate configurations for different platforms. Click the Firestore for Web button (it may be shown as the </> icon). This will open a new screen asking you to register your web application, which will connect to the Cloud Firestore database you just created. For now, only fill in a name for your chat application (e.g., “chat_web_app”), then click Register to generate the configuration code which looks like this:
 
-`const firebaseConfig = { <br>
-  apiKey: "AIzAS4G45et6Cs-wSluDnda16f5uc_9QHg7kBxU",<br>
+`const firebaseConfig = { /n
+  apiKey: "AIzAS4G45et6Cs-wSluDnda16f5uc_9QHg7kBxU",\n
   authDomain: "chat-app-4ae7f.firebaseapp.com",<br>
   projectId: "chat-app-48pif",<br>
   storageBucket: "chat-app-48pif.appspot.com",<br>
