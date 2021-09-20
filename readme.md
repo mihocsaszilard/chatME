@@ -185,11 +185,11 @@ The last step is to configure your freshly created database. To do this, click t
 ```javascriptconst
  firebaseConfig = { 
   apiKey: "AIzAS4G45et6Cs-wSluDnda16f5uc_9QHg7kBxU",
-  authDomain: "chat-app-4ae7f.firebaseapp.com",<br>
-  projectId: "chat-app-48pif",<br>
-  storageBucket: "chat-app-48pif.appspot.com",<br>
-  messagingSenderId: "70176808883",<br>
-  appId: "1:70690718883:web:46b85078125a1b6a9756b6",<br>
+  authDomain: "chat-app-4ae7f.firebaseapp.com",
+  projectId: "chat-app-48pif",
+  storageBucket: "chat-app-48pif.appspot.com",
+  messagingSenderId: "70176808883",
+  appId: "1:70690718883:web:46b85078125a1b6a9756b6",
 };
 ```
 
