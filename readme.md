@@ -13,6 +13,11 @@
       * [User Stories](#stories)
       * [Key Features](#key-features)
   + [Technical Requirements](#technical)
+  + [Get Started](#get-started)
+      * [Setting up](#setting-up)
+      + [Install Dependencies](#install-dep)
+          * [Dependencies](#dependencies) 
+      * [Run the app](#run)
 
 <h2 id="built">Built with</h2>
 
@@ -122,3 +127,59 @@
     The app’s codebase must contain comments.
   </li>
 </ul>
+
+<h2 id="get-started">Get Started</h2>
+
+<h3 id="setting-up">Setting up</h3>
+
+  To develop and test with React Native applications, Facebook recommends using [Expo](https://docs.expo.dev/), an open-source platform for developing native apps that runs on Android, iOS, and the web. First of all, you need to install the [Expo Command Line Interface](https://docs.expo.dev/workflow/expo-cli/) and download the [Expo Go](https://docs.expo.dev/guides/sharing-preview-releases/#expo-go) iOS and Android compatible app on your phone for real time testing.
+
+  To install Expo CLI run the following command in terminal:
+
+  `npm install --global expo-cli`
+
+<h3 id="install-dep">Install Dependencies</h3>
+
+  To install dependencies run the following command in terminal:
+
+  `npm install`
+
+<h4 id="dependencies">Dependencies:</h4>
+
+<ul>
+  <li>react-native-community/masked-view 0.1.10,</li>
+  <li>react-navigation/native ^6.0.2,</li>
+  <li>react-navigation/stack ^6.0.7,</li>
+  <li>stripe/stripe-react-native 0.1.4,</li>
+  <li>expo ~42.0.1,</li>
+  <li>expo-status-bar ~1.0.4,</li>
+  <li>firebase 8.2.3,</li>
+  <li>react 16.13.1,</li>
+  <li>react-dom 16.13.1,</li>
+  <li>react-native https//github.com/expo/react-native/archive/sdk-42.0.0.tar.gz,</li>
+  <li>react-native-chatbot 0.0.1-alpha.12,</li>
+  <li>react-native-dialogflow 3.1.0,</li>
+  <li>react-native-gesture-handler ~1.10.2,</li>
+  <li>react-native-gifted-chat ^0.16.3,</li>
+  <li>react-native-push-notification ^3.5.2,</li>
+  <li>react-native-reanimated ~2.2.0,</li>
+  <li>react-native-safe-area-context 3.2.0,</li>
+  <li>react-native-screens ~3.4.0,</li>
+  <li>react-native-svg 12.1.1,</li>
+  <li>react-native-voice ^0.3.0,</li>
+  <li>react-native-web ~0.13.12,</li>
+  <li>react-navigator 0.0.0-0</li>
+</ul>
+
+<h3 id="rus">Run the app</h3>
+
+In order to run the app please run the following command in terminal:
+
+`expo start`
+
+This command will open a new window in your browser and offers more options to run the app: 
+<ul>
+  <li>on Android/iOS emulator,</li>
+  <li>on your phone, scanning the QR Code which redirects to Expo Go</li>
+  <li>or in browser</li>
+</ul> 
