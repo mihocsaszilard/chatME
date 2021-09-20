@@ -8,11 +8,11 @@
  </div>
 
  Table of content
-  * [Built with](#built)
+  + [Built with](#built)
   + [Features and Requirements](#features)
       * [User Stories](#stories)
       * [Key Features](#key-features)
-  * [Technical Requirements](#technical)
+  + [Technical Requirements](#technical)
 
 <h2 id="built">Built with</h2>
 
