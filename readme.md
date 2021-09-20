@@ -171,7 +171,7 @@
   <li>react-navigator 0.0.0-0</li>
 </ul>
 
-<h3 id="rus">Run the app</h3>
+<h3 id="run">Run the app</h3>
 
 In order to run the app please run the following command in terminal:
 
