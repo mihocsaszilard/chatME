@@ -20,7 +20,7 @@
           * [Dependencies](#dependencies) 
       * [Database Configuration](#config)
       * [Run the app](#run)
-  * [Contact](#contact)
+  + [Contact](#contact)
 
 
 <h2 id="features">Features and Requirements</h2>
