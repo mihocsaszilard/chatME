@@ -20,6 +20,7 @@
           * [Dependencies](#dependencies) 
       * [Database Configuration](#config)
       * [Run the app](#run)
+  * [Contact](#contact)
 
 
 <h2 id="features">Features and Requirements</h2>
@@ -220,7 +221,7 @@ This command will open a new window in your browser and offers more options to o
   <li>or in browser</li>
 </ul> 
 
-<h2>Contact</h2>
+<h2 id="contact">Contact</h2>
 
 [<img align="left" alt="linkedin profile" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/linkedin.svg" />][linkedin]
 [<img align="left" alt="twitter profile" width="25px" src="https://github.com/mihocsaszilard/chatME/blob/main/assets/twitter.svg" />][twitter]
