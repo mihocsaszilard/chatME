@@ -7,11 +7,13 @@
     </h3>
  </div>
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+ Table of content
+ * (Built with) [built]
+        + (Features and Requirements) [features]
+            * (User Stories ) [stories]
+            * lime  
 
-<h2>Features and Requirements</h2>
-
-<h3>Built with</h3>
+<h2 id="built">Built with</h2>
 
 <ul>
   <li>React Native</li>
@@ -24,7 +26,9 @@
   <li>Dialogflow</li>
 </ul>
 
-<h3>User Stories</h3>
+<h2 id="features">Features and Requirements</h2>
+
+<h3 id="stories">User Stories</h3>
 
 <p>
   As a new user: 
@@ -74,7 +78,7 @@
   </li>
 </ul>
 
-<h3>Technical Requirements</h3>
+<h2>Technical Requirements</h2>
 
 <ul>
   <li>
