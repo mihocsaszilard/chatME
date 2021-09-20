@@ -205,7 +205,7 @@ The last step is to configure your freshly created database.
 };
 ```
 
-!Make sure you change the content of 'firebaseConfig' with your own!
+**Make sure you change the content of 'firebaseConfig' with your own!**
 
 <h3 id="run">Running the app</h3>
 
