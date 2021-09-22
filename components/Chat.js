@@ -10,6 +10,8 @@ import {
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { Dialogflow_V2 } from "react-native-dialogflow";
 import { dialogflowConfig } from "./../env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -41,7 +43,9 @@ export default class Chat extends Component {
       user: {
         _id: "",
         name: "",
+        avatar: "",
       },
+      isConnected: false,
     };
 
     //if no firebase
@@ -54,38 +58,56 @@ export default class Chat extends Component {
     this.referenceUsers = null;
   }
 
-  componentDidMount() {
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        firebase.auth().signInAnonymously();
-      }
-      //update user data
+  //loads messages from asyncStorage
+  async getMessages() {
+    let messages = "";
+    try {
+      messages = (await AsyncStorage.getItem("messages")) || [];
       this.setState({
-        uid: user.uid,
-        messages: [],
-        user: {
-          _id: user.uid,
-          name: name,
-        },
-        loginText: (
-          <Text style={[styles.online, { color: "green" }]}>Online!</Text>
-        ),
+        messages: JSON.parse(messages),
       });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
-      this.referenceMessagesUsers = firebase
-        .firestore()
-        .collection("messages")
-        .where("uid", "==", this.state.uid);
-
-      if (this.referenceMessagesUsers) {
-        this.unsubscribe = this.referenceMessages
-          .orderBy("createdAt", "desc")
-          .onSnapshot(this.onCollectionUpdate);
-      } else {
-        (error) => console.log(error);
-      }
+  addMessages() {
+    const message = this.state.messages[0];
+    //added new message to firebase
+    this.referenceMessages.add({
+      uid: this.state.uid,
+      _id: this.state.messages.length + 1,
+      text: message.text,
+      createdAt: message.createdAt,
+      user: message.user,
     });
+  }
 
+  //save messages to asyncStorage
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem(
+        "messages",
+        JSON.stringify(this.state.messages)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  //delete messages from asyncStorage
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem("messages");
+      this.setState({
+        messages: [],
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  componentDidMount() {
     //inputted name from Start screen
     let name = this.props.route.params.name;
     //display the name in header as screen title in Chat
@@ -101,6 +123,48 @@ export default class Chat extends Component {
       Dialogflow_V2.LANG_ENGLISH_US,
       dialogflowConfig.project_id
     );
+
+    NetInfo.fetch().then((connection) => {
+      if (connection.isConnected) {
+        this.setState({ isConnected: true });
+        console.log("online");
+
+        //listen to authentication event
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+          if (!user) {
+            firebase.auth().signInAnonymously();
+          }
+          //update user data
+          this.setState({
+            uid: user.uid,
+            messages: [],
+            user: {
+              _id: user.uid,
+              name: name,
+              avatar: "https://placeimg.com/140/140/any",
+            },
+            loginText: (
+              <Text style={[styles.online, { color: "green" }]}>Online!</Text>
+            ),
+          });
+
+          this.referenceMessagesUsers = firebase
+            .firestore()
+            .collection("messages")
+            .where("uid", "==", this.state.uid);
+
+          this.unsubscribe = this.referenceMessages
+            .orderBy("createdAt", "desc")
+            .onSnapshot(this.onCollectionUpdate);
+        });
+      } else {
+        console.log("offline");
+        this.setState({ isConnected: false });
+
+        //loads messages from asyncStorage
+        this.getMessages();
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -121,6 +185,7 @@ export default class Chat extends Component {
         user: {
           _id: data.user._id,
           name: data.user.name,
+          avatar: data.user.avatar,
         },
       });
     });
@@ -146,11 +211,22 @@ export default class Chat extends Component {
             backgroundColor: "#555",
           },
         }}
+        timeTextStyle={{
+          right: { color: "#787878" },
+        }}
       />
     );
   }
 
-  //typing indicato --not working yet
+  //Do not render inputToolbar when offline
+  renderInputToolbar(props) {
+    if (this.state.isConnected === false) {
+    } else {
+      return <InputToolbar {...props} />;
+    }
+  }
+
+  //typing indicator --not working yet
   setIsTyping = () => {
     this.setState({
       isTyping: !this.state.isTyping,
@@ -183,6 +259,7 @@ export default class Chat extends Component {
       }),
       () => {
         this.addMessages();
+        this.saveMessages();
       }
     );
 
@@ -210,18 +287,6 @@ export default class Chat extends Component {
   //   );
   // }
 
-  addMessages(message) {
-    message = this.state.messages[0];
-    //added new message to firebase
-    this.referenceMessages.add({
-      uid: this.state.uid,
-      _id: this.state.messages.length + 1,
-      text: message.text,
-      createdAt: message.createdAt,
-      user: message.user,
-    });
-  }
-
   render() {
     return (
       <View style={styles.chatContainer}>
@@ -241,6 +306,7 @@ export default class Chat extends Component {
           isTyping={this.state.isTyping}
           onQuickReply={(quickReply) => this.onQuickReply(quickReply)}
           user={this.state.user}
+          renderInputToolbar={this.renderInputToolbar.bind(this)}
         />
         {/* fix for older Android devices where the input field is hidden beneath the keyboard. */}
         {Platform.OS === "android" ? (
