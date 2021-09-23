@@ -41,7 +41,7 @@ export default class Chat extends Component {
       isTyping: false,
       messages: [],
       uid: 0,
-      loginText: "Logging in...",
+      loginText: "Loading..",
       user: {
         _id: "",
         name: "",
@@ -208,7 +208,7 @@ export default class Chat extends Component {
     });
 
     setTimeout(() => {
-      this.setState({ loginText: "You are online!" });
+      this.setState({ loginText: "Online!" });
     }, 2000);
 
     setTimeout(() => {
@@ -339,10 +339,9 @@ export default class Chat extends Component {
   render() {
     return (
       <View style={styles.chatContainer}>
-        <TouchableOpacity>
-          {/*hide login text after 2 seconds*/}
-          <Text style={styles.online}>{this.state.loginText}</Text>
-        </TouchableOpacity>
+        {/*hide login text after 2 seconds*/}
+        <Text style={styles.online}>{this.state.loginText}</Text>
+
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}

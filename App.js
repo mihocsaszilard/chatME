@@ -44,7 +44,7 @@ export default class App extends Component {
               },
               headerTitleStyle: {
                 color: "#aaa",
-                borderBottomColor: "#555",
+                borderBottomColor: "#333",
                 borderBottomWidth: 1,
                 width: width / 1.48,
               },
