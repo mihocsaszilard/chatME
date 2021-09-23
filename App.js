@@ -35,20 +35,18 @@ export default class App extends Component {
             name="Chat"
             component={Chat}
             options={{
-              headerTitleStyle: {
-                color: "#aaa",
-                borderBottomColor: "#555",
-                borderBottomWidth: 1,
-                width: width / 1.48,
-              },
-            }}
-            options={{
               headerTransparent: false,
               headerTintColor: "#555",
               headerStyle: {
                 backgroundColor: "#222",
                 // borderBottomColor: "#333",
                 // borderBottomWidth: 2,
+              },
+              headerTitleStyle: {
+                color: "#aaa",
+                borderBottomColor: "#555",
+                borderBottomWidth: 1,
+                width: width / 1.48,
               },
             }}
           />

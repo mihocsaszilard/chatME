@@ -6,12 +6,15 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { Dialogflow_V2 } from "react-native-dialogflow";
 import { dialogflowConfig } from "./../env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faTrashAlt, faCircle } from "@fortawesome/free-solid-svg-icons";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -39,7 +42,6 @@ export default class Chat extends Component {
       messages: [],
       uid: 0,
       loginText: "Logging in...",
-      close: "-tap to hide",
       user: {
         _id: "",
         name: "",
@@ -76,7 +78,7 @@ export default class Chat extends Component {
     //added new message to firebase
     this.referenceMessages.add({
       uid: this.state.uid,
-      _id: this.state.messages.length + 1,
+      _id: message._id,
       text: message.text,
       createdAt: message.createdAt,
       user: message.user,
@@ -107,11 +109,53 @@ export default class Chat extends Component {
     }
   }
 
+  deleteAlert = () =>
+    Alert.alert(
+      "Are you sure to delete messages from your device?",
+      "They will be available again after connecting to the internet.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Delete", onPress: () => this.deleteMessages() },
+      ]
+    );
+
   componentDidMount() {
     //inputted name from Start screen
     let name = this.props.route.params.name;
     //display the name in header as screen title in Chat
-    this.props.navigation.setOptions({ title: name });
+    this.props.navigation.setOptions({
+      title: name,
+      headerRight: () => (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              this.deleteAlert();
+            }}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} style={styles.delete} />
+          </TouchableOpacity>
+          <View>
+            {this.state.isConnected ? (
+              <FontAwesomeIcon
+                icon={faCircle}
+                style={[styles.onlineOffline, { color: "#090" }]}
+                size={10}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faCircle}
+                style={[styles.onlineOffline, { color: "#900" }]}
+                size={10}
+              />
+            )}
+          </View>
+        </View>
+      ),
+    });
 
     this.setState({
       isTyping: false,
@@ -143,9 +187,6 @@ export default class Chat extends Component {
               name: name,
               avatar: "https://placeimg.com/140/140/any",
             },
-            loginText: (
-              <Text style={[styles.online, { color: "green" }]}>Online!</Text>
-            ),
           });
 
           this.referenceMessagesUsers = firebase
@@ -290,13 +331,13 @@ export default class Chat extends Component {
   render() {
     return (
       <View style={styles.chatContainer}>
-        <TouchableOpacity
-          //hide 'Online' text
-          onPress={() => this.setState({ loginText: "", close: "" })}
-        >
-          <Text style={styles.online}>
-            {this.state.loginText} {this.state.close}
-          </Text>
+        <TouchableOpacity>
+          {/*hide login text*/}
+          {setTimeout(() => {
+            this.setState({ loginText: "" });
+          }, 2000)}
+
+          <Text style={styles.online}>{this.state.loginText}</Text>
         </TouchableOpacity>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
@@ -327,5 +368,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#222",
     color: "white",
     zIndex: 10,
+  },
+  delete: {
+    marginRight: 20,
+    marginBottom: 5,
+
+    color: "#aaa",
+    padding: 10,
+  },
+  onlineOffline: {
+    position: "absolute",
+    top: -20,
+    right: 60,
   },
 });
