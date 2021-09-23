@@ -207,10 +207,11 @@ export default class Chat extends Component {
       }
     });
 
+    //after 2s the 'loading..' text changes to 'Online!'
     setTimeout(() => {
       this.setState({ loginText: "Online!" });
     }, 2000);
-
+    //+2s the text disappears
     setTimeout(() => {
       this.setState({ loginText: "" });
     }, 4000);
@@ -339,7 +340,7 @@ export default class Chat extends Component {
   render() {
     return (
       <View style={styles.chatContainer}>
-        {/*hide login text after 2 seconds*/}
+        {/*hide login text after 2+2 seconds*/}
         <Text style={styles.online}>{this.state.loginText}</Text>
 
         <GiftedChat
