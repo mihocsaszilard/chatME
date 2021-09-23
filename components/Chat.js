@@ -206,6 +206,14 @@ export default class Chat extends Component {
         this.getMessages();
       }
     });
+
+    setTimeout(() => {
+      this.setState({ loginText: "You are online!" });
+    }, 2000);
+
+    setTimeout(() => {
+      this.setState({ loginText: "" });
+    }, 4000);
   }
 
   componentWillUnmount() {
@@ -332,11 +340,7 @@ export default class Chat extends Component {
     return (
       <View style={styles.chatContainer}>
         <TouchableOpacity>
-          {/*hide login text*/}
-          {setTimeout(() => {
-            this.setState({ loginText: "" });
-          }, 2000)}
-
+          {/*hide login text after 2 seconds*/}
           <Text style={styles.online}>{this.state.loginText}</Text>
         </TouchableOpacity>
         <GiftedChat
@@ -363,16 +367,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#222",
   },
   online: {
+    position: "absolute",
     width: "100%",
     textAlign: "center",
-    backgroundColor: "#222",
-    color: "white",
-    zIndex: 10,
+    color: "#555",
   },
   delete: {
     marginRight: 20,
     marginBottom: 5,
-
     color: "#aaa",
     padding: 10,
   },
