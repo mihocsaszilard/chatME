@@ -14,7 +14,11 @@ import { dialogflowConfig } from "./../env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faTrashAlt, faCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrashAlt,
+  faCircle,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -28,6 +32,7 @@ const firebaseConfig = {
   appId: "1:706220138883:web:46b85201b3680c6a9756b6",
 };
 
+//created ChatBot
 const ChatBot = {
   uid: 1,
   name: "ChatBot",
@@ -109,6 +114,7 @@ export default class Chat extends Component {
     }
   }
 
+  //warn user that messages will be deleted from AsyncStorage
   deleteAlert = () =>
     Alert.alert(
       "Are you sure to delete messages from your device?",
@@ -126,9 +132,11 @@ export default class Chat extends Component {
   componentDidMount() {
     //inputted name from Start screen
     let name = this.props.route.params.name;
-    //display the name in header as screen title in Chat
+
     this.props.navigation.setOptions({
+      //display the name in header as screen title in Chat
       title: name,
+      //added trash icon to header
       headerRight: () => (
         <View>
           <TouchableOpacity
@@ -138,14 +146,17 @@ export default class Chat extends Component {
           >
             <FontAwesomeIcon icon={faTrashAlt} style={styles.delete} />
           </TouchableOpacity>
+          {/*added dot */}
           <View>
             {this.state.isConnected ? (
+              //green if online
               <FontAwesomeIcon
                 icon={faCircle}
                 style={[styles.onlineOffline, { color: "#090" }]}
                 size={10}
               />
             ) : (
+              //red if offline
               <FontAwesomeIcon
                 icon={faCircle}
                 style={[styles.onlineOffline, { color: "#900" }]}
@@ -161,6 +172,7 @@ export default class Chat extends Component {
       isTyping: false,
     });
 
+    //config dialogflow
     Dialogflow_V2.setConfiguration(
       dialogflowConfig.client_email,
       dialogflowConfig.private_key,
@@ -168,6 +180,7 @@ export default class Chat extends Component {
       dialogflowConfig.project_id
     );
 
+    //check network connection
     NetInfo.fetch().then((connection) => {
       if (connection.isConnected) {
         this.setState({ isConnected: true });
@@ -189,6 +202,7 @@ export default class Chat extends Component {
             },
           });
 
+          //add messages to user
           this.referenceMessagesUsers = firebase
             .firestore()
             .collection("messages")
@@ -268,6 +282,27 @@ export default class Chat extends Component {
     );
   }
 
+  //customize send button
+  renderSend = (props) => {
+    return (
+      <TouchableOpacity
+        {...props}
+        style={styles.sendBtn}
+        onPress={() => props.onSend({ text: props.text }, true)}
+      >
+        <FontAwesomeIcon
+          icon={faPaperPlane}
+          size={30}
+          style={{
+            color: "#000",
+            borderRadius: 15,
+            transform: [{ rotate: "28deg" }],
+          }}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   //Do not render inputToolbar when offline
   renderInputToolbar(props) {
     if (this.state.isConnected === false) {
@@ -284,7 +319,7 @@ export default class Chat extends Component {
   };
 
   handleGoogleResponse(result) {
-    //I don't need the whole data just the text
+    //don't need the whole data just the text
     let text = result.queryResult.fulfillmentMessages[0].text.text[0];
 
     this.sendBotResponse(text);
@@ -352,6 +387,7 @@ export default class Chat extends Component {
           onQuickReply={(quickReply) => this.onQuickReply(quickReply)}
           user={this.state.user}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
+          renderSend={this.renderSend}
         />
         {/* fix for older Android devices where the input field is hidden beneath the keyboard. */}
         {Platform.OS === "android" ? (
@@ -382,5 +418,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -20,
     right: 60,
+  },
+  sendBtn: {
+    marginRight: 20,
+    marginBottom: 10,
   },
 });
