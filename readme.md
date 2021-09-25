@@ -81,7 +81,7 @@
 
 <ul>
    <li>
-   :red_circle: / :green_circle: - showing online/offline status
+    :green_circle: / :red_circle: - showing online/offline status
   </li>
   <li>
    :wastebasket: - deleting messages from AsyncStorage
