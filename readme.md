@@ -75,6 +75,21 @@
   </li>
 </ul>
 
+
+<h3 id="extra-features">Extra Features</h3>
+
+<ul>
+   <li>
+   :red_circle: / :green_circle: - showing online/offline status
+  </li>
+  <li>
+   :wastebucket: - deleting messages from AsyncStorage
+  </li>
+  <li>
+    Custom Send button
+  </li>
+</ul>
+
 <h2 id="technical">Technical Requirements</h2>
 
 <ul>
