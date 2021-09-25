@@ -19,6 +19,7 @@ import {
   faCircle,
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
+import CustomActions from "./CustomActions";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -299,7 +300,7 @@ export default class Chat extends Component {
           icon={faPaperPlane}
           size={30}
           style={{
-            color: "#555",
+            color: "#999",
             borderRadius: 15,
             transform: [{ rotate: "28deg" }],
           }}
@@ -377,6 +378,9 @@ export default class Chat extends Component {
   //   );
   // }
 
+  //displays the communication features
+  renderCustomActions = (props) => <CustomActions {...props} />;
+
   render() {
     return (
       <View style={styles.chatContainer}>
@@ -393,6 +397,7 @@ export default class Chat extends Component {
           user={this.state.user}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
           renderSend={this.renderSend}
+          renderActions={this.renderCustomActions}
         />
         {/* fix for older Android devices where the input field is hidden beneath the keyboard. */}
         {Platform.OS === "android" ? (
