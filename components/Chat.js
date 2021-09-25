@@ -293,13 +293,13 @@ export default class Chat extends Component {
       <TouchableOpacity
         {...props}
         style={styles.sendBtn}
-        onPress={() => props.onSend({ text: props.text }, true)}
+        onPress={() => props.onSend({ text: props.text }, true)} //fix: sending empty message
       >
         <FontAwesomeIcon
           icon={faPaperPlane}
           size={30}
           style={{
-            color: "#000",
+            color: "#555",
             borderRadius: 15,
             transform: [{ rotate: "28deg" }],
           }}
