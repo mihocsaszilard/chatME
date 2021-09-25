@@ -53,6 +53,7 @@ export default class Chat extends Component {
         avatar: "",
       },
       isConnected: false,
+      dotColor: "",
     };
 
     //if no firebase
@@ -133,41 +134,6 @@ export default class Chat extends Component {
     //inputted name from Start screen
     let name = this.props.route.params.name;
 
-    this.props.navigation.setOptions({
-      //display the name in header as screen title in Chat
-      title: name,
-      //added trash icon to header
-      headerRight: () => (
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              this.deleteAlert();
-            }}
-          >
-            <FontAwesomeIcon icon={faTrashAlt} style={styles.delete} />
-          </TouchableOpacity>
-          {/*added dot */}
-          <View>
-            {this.state.isConnected ? (
-              //green if online
-              <FontAwesomeIcon
-                icon={faCircle}
-                style={[styles.onlineOffline, { color: "#090" }]}
-                size={10}
-              />
-            ) : (
-              //red if offline
-              <FontAwesomeIcon
-                icon={faCircle}
-                style={[styles.onlineOffline, { color: "#900" }]}
-                size={10}
-              />
-            )}
-          </View>
-        </View>
-      ),
-    });
-
     this.setState({
       isTyping: false,
     });
@@ -221,17 +187,56 @@ export default class Chat extends Component {
       }
     });
 
-    //after 2s the 'loading..' text changes to 'Online!'
+    //after 2s the 'loading..' text changes to 'Online! or 'Offline!'
     setTimeout(() => {
-      this.setState({ loginText: "Online!" });
+      !this.state.isConnected
+        ? this.setState({ loginText: "Offline!" })
+        : this.setState({ loginText: "Online!" });
     }, 2000);
-    //+2s the text disappears
+    //+2s hide loadingText
     setTimeout(() => {
       this.setState({ loginText: "" });
     }, 4000);
+
+    //green if online
+
+    this.props.navigation.setOptions({
+      //display the name in header as screen title in Chat
+      title: name,
+      //added trash icon to header
+      headerRight: () => (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              this.deleteAlert();
+            }}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} style={styles.delete} />
+          </TouchableOpacity>
+          {/*added online/offline dot */}
+          <View>
+            {this.state.isConnected ? (
+              <FontAwesomeIcon
+                icon={faCircle}
+                style={[styles.onlineOffline, { color: "#090" }]} //isConnected
+                size={10}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faCircle}
+                style={[styles.onlineOffline, { color: "#900" }]} //!isConnected
+                size={10}
+              />
+            )}
+          </View>
+        </View>
+      ),
+    });
   }
+  //+2s the text disappears
 
   componentWillUnmount() {
+    this.unsubscribe;
     //stop listening to authentication
     this.authUnsubscribe();
   }
@@ -276,7 +281,7 @@ export default class Chat extends Component {
           },
         }}
         timeTextStyle={{
-          right: { color: "#787878" },
+          right: { color: "#ddd" },
         }}
       />
     );

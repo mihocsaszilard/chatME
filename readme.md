@@ -83,7 +83,7 @@
    :red_circle: / :green_circle: - showing online/offline status
   </li>
   <li>
-   :wastebucket: - deleting messages from AsyncStorage
+   :wastebasket: - deleting messages from AsyncStorage
   </li>
   <li>
     Custom Send button
