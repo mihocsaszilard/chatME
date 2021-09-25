@@ -12,6 +12,7 @@
   + [Features and Requirements](#features)
       * [User Stories](#stories)
       * [Key Features](#key-features)
+      * [Extra Features](#extra-features)
   + [Technical Requirements](#technical)
   + [Built with](#built)
   + [Get Started](#get-started)
