@@ -5,6 +5,12 @@
       provide users with a chat interface and options to share images and their
       location.
     </h3>
+
+<p float="left">
+  <img src="./assets/screenshot2.png" alt="screenshot of start screen on Android device" width="100">
+  <img src="./assets/screenshot1.png" alt="screenshot of chat screen on Android device" width="100">
+</p>
+
  </div>
 
  <h2>Table of content</h2>
