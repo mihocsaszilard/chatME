@@ -7,8 +7,8 @@
     </h3>
 
 <p float="left">
-  <img src="./assets/screenshot2.png" alt="screenshot of start screen on Android device" width="100">
-  <img src="./assets/screenshot1.png" alt="screenshot of chat screen on Android device" width="100">
+  <img src="./assets/screenshot2.png" alt="screenshot of start screen on Android device" width="300">
+  <img src="./assets/screenshot1.png" alt="screenshot of chat screen on Android device" width="300">
 </p>
 
  </div>
