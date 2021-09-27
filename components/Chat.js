@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Alert,
+  LogBox,
 } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { Dialogflow_V2 } from "react-native-dialogflow";
@@ -20,6 +21,9 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomActions from "./CustomActions";
+import MapView from "react-native-maps";
+
+LogBox.ignoreAllLogs(); //ignore useNativeDriver warning
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -39,7 +43,6 @@ const ChatBot = {
   name: "ChatBot",
   avatar: "https://placeimg.com/140/140/any",
 };
-
 export default class Chat extends Component {
   constructor(props) {
     super(props);
@@ -55,6 +58,8 @@ export default class Chat extends Component {
       },
       isConnected: false,
       dotColor: "",
+      image: null,
+      location: null,
     };
 
     //if no firebase
@@ -86,9 +91,11 @@ export default class Chat extends Component {
     this.referenceMessages.add({
       uid: this.state.uid,
       _id: message._id,
-      text: message.text,
+      text: message.text || "",
       createdAt: message.createdAt,
       user: message.user,
+      image: message.image || null,
+      location: message.location || null,
     });
   }
 
@@ -134,6 +141,9 @@ export default class Chat extends Component {
   componentDidMount() {
     //inputted name from Start screen
     let name = this.props.route.params.name;
+
+    //hide yellow warnings
+    LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
 
     this.setState({
       isTyping: false,
@@ -237,7 +247,7 @@ export default class Chat extends Component {
   //+2s the text disappears
 
   componentWillUnmount() {
-    this.unsubscribe;
+    this.unsubscribe();
     //stop listening to authentication
     this.authUnsubscribe();
   }
@@ -247,16 +257,18 @@ export default class Chat extends Component {
     //go through each document
     QuerySnapshot.forEach((doc) => {
       //get the queryDocumentSnapshot's data
-      let data = doc.data();
+      const data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text,
+        text: data.text || "",
         createdAt: data.createdAt.toDate(),
         user: {
           _id: data.user._id,
           name: data.user.name,
           avatar: data.user.avatar,
         },
+        image: data.image || null,
+        location: data.location || null,
       });
     });
     this.setState({
@@ -324,26 +336,27 @@ export default class Chat extends Component {
     });
   };
 
-  handleGoogleResponse(result) {
-    //don't need the whole data just the text
-    let text = result.queryResult.fulfillmentMessages[0].text.text[0];
+  //handle ChatBot response
+  // handleGoogleResponse(result) {
+  //   //don't need the whole data just the text
+  //   let text = result.queryResult.fulfillmentMessages[0].text.text[0];
 
-    this.sendBotResponse(text);
-  }
+  //   this.sendBotResponse(text);
+  // }
 
-  //added user, createdAt and id to the Dialogbox response
-  sendBotResponse(text) {
-    let msg = {
-      _id: this.state.messages.length + 2,
-      text,
-      createdAt: new Date(),
-      user: ChatBot,
-    };
-    this.referenceMessages.add(msg);
-  }
+  // //added user, createdAt and id to the Dialogbox response
+  // sendBotResponse(text) {
+  //   let msg = {
+  //     _id: this.state.messages.length + 2,
+  //     text,
+  //     createdAt: new Date(),
+  //     user: ChatBot,
+  //   };
+  //   this.referenceMessages.add(msg);
+  // }
 
   //add new messages to 'message' array
-  onSend(messages = []) {
+  onSend = (messages = []) => {
     this.setState(
       (previousState) => ({
         messages: GiftedChat.append(previousState.messages, messages),
@@ -354,6 +367,7 @@ export default class Chat extends Component {
       }
     );
 
+    //dialogflow - ChatBot
     // let message = messages[0].text;
 
     // Dialogflow_V2.requestQuery(
@@ -362,7 +376,7 @@ export default class Chat extends Component {
     //   (error) => console.log(error)
     //   //possible unhandled promise rejection on real ios device (iphone8)
     // );
-  }
+  };
 
   // onQuickReply(quickReply) {
   //   this.setState((previousState) => ({
@@ -381,6 +395,30 @@ export default class Chat extends Component {
   //displays the communication features
   renderCustomActions = (props) => <CustomActions {...props} />;
 
+  //render custom view for location
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{
+            width: 150,
+            height: 100,
+            borderRadius: 13,
+            margin: 3,
+          }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     return (
       <View style={styles.chatContainer}>
@@ -398,6 +436,7 @@ export default class Chat extends Component {
           renderInputToolbar={this.renderInputToolbar.bind(this)}
           renderSend={this.renderSend}
           renderActions={this.renderCustomActions}
+          renderCustomView={this.renderCustomView}
         />
         {/* fix for older Android devices where the input field is hidden beneath the keyboard. */}
         {Platform.OS === "android" ? (

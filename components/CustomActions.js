@@ -5,72 +5,79 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
+import firebase from "firebase";
+import "firebase/firestore";
 
 export default class CustomActions extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      image: null,
-      text: "",
-      recording: null,
-      location: null,
-    };
-  }
-
+  //choose photo from Library
   pickImage = async () => {
     const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    try {
+      if (status === "granted") {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: "Images",
+        }).catch((error) => console.log(error));
 
-    if (status === "granted") {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: "Images",
-      }).catch((error) => console.log(error));
-
-      if (!result.cancelled) {
-        this.setState({
-          image: result,
-        });
+        if (!result.cancelled) {
+          const imageUrl = await this.uploadImageFetch(result.uri);
+          this.props.onSend({ image: imageUrl });
+        }
       }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
+  //take photo
   takePhoto = async () => {
     const { status } = await Permissions.askAsync(
       Permissions.MEDIA_LIBRARY,
       Permissions.CAMERA
     );
+    try {
+      if (status === "granted") {
+        const result = await ImagePicker.launchCameraAsync().catch((error) =>
+          console.log(error)
+        );
 
-    if (status === "granted") {
-      let result = await ImagePicker.launchCameraAsync().catch((error) =>
-        console.log(error)
-      );
-
-      if (!result.cancelled) {
-        this.setState({
-          image: result,
-          text: "",
-        });
+        if (!result.cancelled) {
+          const imageUrl = await this.uploadImageFetch(result.uri);
+          this.props.onSend({ image: imageUrl });
+        }
       }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
+  //share location
   getLocation = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync(); //Permissions.askAsync(Permissions.LOCATION); ->deprecated
 
-    if (status === "granted") {
-      let result = await Location.getCurrentPositionAsync({}).catch((error) =>
-        console.log(error)
-      );
-
-      if (result) {
-        this.setState({
-          location: result,
-        });
+      if (status === "granted") {
+        const result = await Location.getCurrentPositionAsync({}).catch(
+          (error) => console.log(error)
+        );
+        const longitude = JSON.stringify(result.coords.longitude);
+        const latitude = JSON.stringify(result.coords.latitude);
+        if (result) {
+          this.props.onSend({
+            location: {
+              longitude: longitude,
+              latitude: latitude,
+            },
+          });
+        }
       }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
+  //open up the menu
   onActionPress = () => {
-    const options = ["Choose Image", "Take Photo", "Location", "Cancel"];
+    const options = ["Choose Image", "Take Photo", "Share Location", "Cancel"];
     const cancelButtonIndex = options.length - 1;
     this.context.actionSheet().showActionSheetWithOptions(
       {
@@ -81,7 +88,7 @@ export default class CustomActions extends Component {
         switch (buttonIndex) {
           //don't forget to replace with functions!!!
           case 0:
-            console.log("image from galerry");
+            console.log("image from gallery");
             return this.pickImage();
           case 1:
             console.log("camera");
@@ -95,10 +102,45 @@ export default class CustomActions extends Component {
     );
   };
 
+  //upload media to the Firestore database.
+  uploadImageFetch = async (uri) => {
+    const blob = await new Promise((res, rej) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        res(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        console.log(e);
+        rej(new TypeError("Network request filed!"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    const imgNameBefore = uri.split("/");
+    const imgName = imgNameBefore[imgNameBefore.length - 1];
+
+    // Create a reference to the firebase storage
+    const ref = firebase.storage().ref().child(`images/${imgName}`);
+    const snapshot = await ref.put(blob);
+
+    //close connection
+    blob.close();
+
+    return await snapshot.ref.getDownloadURL();
+  };
+
   render() {
     return (
       <View>
-        <TouchableOpacity style={styles.container} onPress={this.onActionPress}>
+        <TouchableOpacity
+          accessible={true}
+          accessibilityLabel="More options"
+          accessibilityHint="Let’s you choose to send an image or your geolocation."
+          style={styles.container}
+          onPress={this.onActionPress}
+        >
           <View style={[styles.wrapper, this.props.wrapperStyle]}>
             <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
           </View>

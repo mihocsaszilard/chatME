@@ -15,8 +15,13 @@ import { Ionicons } from "@expo/vector-icons";
 export default class Start extends Component {
   constructor(props) {
     super(props);
-    this.state = { name: "", bgColor: "black" };
+    this.state = {
+      name: "",
+      bgColor: "black",
+      border: 0,
+    };
   }
+
   render() {
     return (
       //added background image
@@ -53,41 +58,63 @@ export default class Start extends Component {
             </View>
             {/*color picker */}
             <View style={styles.colorPickerContainer}>
-              <Text style={styles.chooseColor}>Choose Background Color:</Text>
+              <Text style={styles.chooseColor}>Choose Accent Color:</Text>
               <View style={styles.colorPicker}>
                 <TouchableOpacity
                   accessible={true}
                   accessibilityLabel="Black Color"
                   accessibilityHint="Let’s you choose color black as contrast color in chat."
-                  style={[styles.colors, styles.black]}
+                  style={[
+                    styles.colors,
+                    styles.black,
+                    { borderWidth: this.state.border },
+                  ]}
                   onPress={() => this.setState({ bgColor: "#090C08" })}
                 ></TouchableOpacity>
                 <TouchableOpacity
                   accessible={true}
                   accessibilityLabel="Cherry Color"
                   accessibilityHint="Let’s you choose color cherry as contrast color in chat."
-                  style={[styles.colors, styles.cherry]}
+                  style={[
+                    styles.colors,
+                    styles.cherry,
+                    { borderWidth: this.state.border },
+                  ]}
                   onPress={() => this.setState({ bgColor: "#6e232b" })}
                 ></TouchableOpacity>
                 <TouchableOpacity
                   accessible={true}
                   accessibilityLabel="Lightblue Color"
                   accessibilityHint="Let’s you choose color lightblue as contrast color in chat."
-                  style={[styles.colors, styles.gray]}
+                  style={[
+                    styles.colors,
+                    styles.gray,
+                    {
+                      borderWidth: this.state.border,
+                    },
+                  ]}
                   onPress={() => this.setState({ bgColor: "#696ac9" })}
                 ></TouchableOpacity>
                 <TouchableOpacity
                   accessible={true}
                   accessibilityLabel="Lightgreen Color"
                   accessibilityHint="Let’s you choose color lightgreen as contrast color in chat."
-                  style={[styles.colors, styles.green]}
+                  style={[
+                    styles.colors,
+                    styles.green,
+                    { borderWidth: this.state.border },
+                  ]}
                   onPress={() => this.setState({ bgColor: "#b8cc9d" })}
                 ></TouchableOpacity>
                 <TouchableOpacity
                   accessible={true}
                   accessibilityLabel="Orange Color"
                   accessibilityHint="Let’s you choose color orange as contrast color in chat."
-                  style={[styles.colors, styles.orange]}
+                  style={[
+                    styles.colors,
+                    styles.orange,
+                    { borderWidth: this.state.border },
+                  ]}
                   onPress={() => this.setState({ bgColor: "#e8b32c" })}
                 ></TouchableOpacity>
               </View>
@@ -225,9 +252,9 @@ const styles = StyleSheet.create({
   },
   chooseColor: {
     fontSize: 16,
-    marginLeft: 5,
     fontWeight: "300",
     color: "#757083",
+    marginLeft: 10,
   },
   colorPicker: {
     flexDirection: "row",
@@ -236,9 +263,10 @@ const styles = StyleSheet.create({
   colors: {
     width: 45,
     height: 45,
-    margin: 10,
+    margin: 8,
     marginTop: 0,
     borderRadius: 45 / 2,
+    borderColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
